@@ -1,7 +1,7 @@
 /**
  * Example store structure
  */
-const store = {
+const STORE = {
   // 5 or more questions are required
   questions: [
     {
@@ -61,43 +61,65 @@ const store = {
   score: 0
 };
 
-function generateMainPage() {
+function generateStartPage() {
   // show main page with title and button
   return `<div class="mainPage">
   <h2>Skateboarding Trivia:</h2>
   <button id="startQuiz">Let's Go!</button>
   </div>`
 }
+// show score
+function generateScore() {
+  return `
+    <ul class="question-and-score">
+      <li id="question-number">
+        Question Number: ${STORE.currentQuestionNum + 1}/${STORE.questions.length}
+      </li>
+      <li id="score">
+        Score: ${STORE.score}/${STORE.questions.length}
+      </li>
+    </ul>
+  `;
+}
 
 // start quiz
 function startQuiz() {
   $("main").on('click', "#startQuiz", function () {
-    store.quizStarted = true;
+    STORE.quizStarted = true;
     render();
   })
 }
-
+// generate questions
 function generateQuestion() {
-  // generate questions
-  let question = store.questions[store.questionNumber];
-  // map through answers
-  let answers = question.answers.map((answer, index) => {
-    console.log(answer, index);
-    return `<input type="radio" id="answer${index}" name="answer" value="${answer}">
-      <label for="answer${index}">${answer}</label><br>`;
+  currentQuestionNum = STORE.currentQuestionNum;
+  return `<form id="question-form" class="question-form">
+  <fieldset><div class="question"></div>
+  <div class="options"><div class="answers">
+  <legend> ${STORE.questions[currentQuestionNum].question} </legend>
+  </div> ${generateAnswers()} </div>
+  <button type="submit" id ="submit-answer-btn" tabindex="5">Submit</button>
+  <button type="button" id="next-question-btn" tabindex="6"> Next &gt;></button>
+  </fieldset>
+  </form>`;
+
+
+}
+// respond to guesses
+function generateAnswers() {
+  const answersArray = STORE.questions[STORE.currentQuestionNum].answers;
+  let answersHtml = "";
+  let idx = 0;
+  answersArray.forEach(answer => {
+    answersHtml += `
+    <div tabindex ="${idx + 1}" id ="option-container -${idx}">
+    <input type="radio" name="options" id ="option${idx + 1}" value="${answer}"
+     required>
+     <label for="option${idx + 1}"> ${answer}
+     </label>
+     </div>`;
+    idx++;
   });
-  console.log(answers);
-  console.log(question);
-  console.log("question number", store.questionNumber);
-  return `<div class="mainPage">
-  <form id="question">
-    <h2>${question.question}</h2>
-    ${answers.join("")}
-    <button type="submit">Submit Choice</button>
-    </form>
-  </div>`
-
-
+  return answersHtml;
 }
 
 function answerSubmit() {
@@ -107,70 +129,85 @@ function answerSubmit() {
     // respond to choice
     let chosenAnswer = $("input[name='answer']:checked").val();
     console.log(chosenAnswer);
-// show nope
+    // show nope
     {
-      if (chosenAnswer === store.answers) {
+      if (chosenAnswer === STORE.answers) {
         return `<h2>Nope</h2>`;
         // show correct
       }
-      else (chosenAnswer === store.correctAnswer)
-      return `<h2>${store.correctAnswer}</h2>`;
+      else (chosenAnswer === STORE.correctAnswer)
+      return `<h2>${STORE.correctAnswer}</h2>`;
 
     }
 
-  })
-  // go to next question
-  store.questionNumber++;
+  });
 }
-// back button
-function backButton() {
-  return `<div class="back-button">
-  <button id="back">Back</button>
-  </div>`
+// feedback
+function generateFeedback(answerStatus) {
+  let correctAnswer = STORE.questions[STORE.currentQuestionNum].correctAnswer;
+  let html = "";
+  if (answerStatus === "correct") {
+    html = `<div class="right-answer">Yes!</div>`;
+  } else if (answerStatus === "incorrect") {
+    html = `<div class="wrong-answer">Nope. This: ${correctAnswer}.</div>`;
+  }
+  return html;
 }
-// next button
-function nextButton() {
-  return `<div class="next-button">
-  <button id="next">Next</button>
-  </div>`
+// go to next question
+function nextQuestionClick() {
+  $('body').on('click', "#next-button", (event) => {
+    render();
+  });
 }
 
 
-function generateFinalPage() {
+function generateResults() {
   // show when quiz is done and show reset button
   // show results
-  return `<div class="finalPage">
-  <h2>Done! How did you do?</h2>  
-  <p>Final Score: ${store.score}</p>
-  <button id="reset">Reset</button>
-  </div>`
+  return `<div class="results">
+    <form id="js-restart-quiz"><fieldset>
+    <div class="row"><div class="col-12">
+    <legend>How did you do? ${STORE.score}/${STORE.questions.length}</legend>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-12">
+    <button type="button" id="reset">reset</button>
+    </div>
+    </div>
+    </fieldset>
+    </form>
+    </div>`;
 }
 
 function render() {
   // render the quiz in DOM
-  let html = "";
-  console.log(store.questionNumber, store.questions.length);
-  if (store.quizStarted) {
-    if (store.questionNumber === store.questions.length) {
-      html = generateFinalPage();
-    } else {
-      html = generateQuestion();
-    }
+  console.log("in renderQuizApp");
+  currentQuestionNum = STORE.currentQuestionNum;
+  if (STORE.quizStarted === false) {
+    $('main').html(generateStartPage());
+  } else if ((currentQuestionNum => 0) &&
+    (currentQuestionNum < STORE.questions.length)) {
+    html = generateScore();
+    html += generateQuestion();
+    $('main').html(html);
   } else {
-    html = generateMainPage();
-
+    $('main').html(generateResults());
   }
-  // show final page
-  $('main').html(html);
+
 }
 
+
 function main() {
-  generateFinalPage();
+  generateResults();
   answerSubmit();
   generateQuestion();
   render();
   startQuiz();
-
+  generateScore();
+  nextQuestionClick();
+  generateFeedback();
+  generateAnswers();
 }
 $(main);
 
