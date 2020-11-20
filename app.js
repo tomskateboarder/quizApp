@@ -73,7 +73,7 @@ function generateScore() {
   return `
     <ul class="question-and-score">
       <li id="question-number">
-        Question Number: ${STORE.currentQuestionNum + 1}/${STORE.questions.length}
+        Question Number: ${STORE.questionNumber + 1}/${STORE.questions.length}
       </li>
       <li id="score">
         Score: ${STORE.score}/${STORE.questions.length}
@@ -84,7 +84,7 @@ function generateScore() {
 
 // start quiz
 function startQuiz() {
-  $("main").on('click', "#startQuiz", function () {
+  $("main").on('click', "#startQuiz", function() {
     
     render();
   })
@@ -97,8 +97,8 @@ function generateQuestion() {
   <div class="options"><div class="answers">
   <legend> ${STORE.questions[questionNumber].question} </legend>
   </div> ${generateAnswers()} </div>
-  <button type="submit" id ="submit-answer-btn" tabindex="5">Submit</button>
-  <button type="button" id="next-question-btn" tabindex="6"> Next &gt;></button>
+  <button type="submit" id ="submit" tabindex="5">submit</button>
+  <button type="button" id="next-button" tabindex="6"> next &gt;></button>
   </fieldset>
   </form>`;
 
@@ -137,12 +137,12 @@ function answerSubmit() {
       }
       else (chosenAnswer === STORE.correctAnswer)
       return `<h2>${STORE.correctAnswer}</h2>`;
-
+      
     }
-
+    
   });
 }
-// handleQuestionFormSubmission() {
+function handleQuestionFormSubmission() {
   $('body').on('submit', '#question-form', function (event) {
     event.preventDefault();
     const questionNumber = STORE.questions
@@ -158,13 +158,9 @@ function answerSubmit() {
         $(optionContainerId).append(generateFeedback('incorrect'));
       }
       STORE.questionNumber++;
-      $('#submit').hide();
-      $('input[type=radio]').each(() => {
-        $('input[type=radio]').attr('disabled', true);
-      });
-      $('#next-question-btn').show();
+     render();
   });
-
+}
 // feedback
 function generateFeedback(answerStatus) {
   let correctAnswer = STORE.questions[STORE.questionNumber].correctAnswer;
