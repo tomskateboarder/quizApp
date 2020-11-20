@@ -173,11 +173,11 @@ function generateFeedback(answerStatus) {
   return html;
 }
 // go to next question
-function nextQuestionClick() {
+/*function nextQuestionClick() {
   $('body').on('click', "#next-button", (event) => {
     render();
   });
-}
+}*/
 
 
 function generateResults() {
@@ -221,7 +221,7 @@ function render() {
 function main() {
     answerSubmit();
     startQuiz();
-    nextQuestionClick();
+    //nextQuestionClick();
     render();
 }
 $(main);
