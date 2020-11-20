@@ -85,17 +85,17 @@ function generateScore() {
 // start quiz
 function startQuiz() {
   $("main").on('click', "#startQuiz", function () {
-    STORE.quizStarted = true;
+    
     render();
   })
 }
 // generate questions
 function generateQuestion() {
-  currentQuestionNum = STORE.currentQuestionNum;
+  let questionNumber = STORE.questionNumber;
   return `<form id="question-form" class="question-form">
   <fieldset><div class="question"></div>
   <div class="options"><div class="answers">
-  <legend> ${STORE.questions[currentQuestionNum].question} </legend>
+  <legend> ${STORE.questions[questionNumber].question} </legend>
   </div> ${generateAnswers()} </div>
   <button type="submit" id ="submit-answer-btn" tabindex="5">Submit</button>
   <button type="button" id="next-question-btn" tabindex="6"> Next &gt;></button>
@@ -106,7 +106,7 @@ function generateQuestion() {
 }
 // respond to guesses
 function generateAnswers() {
-  const answersArray = STORE.questions[STORE.currentQuestionNum].answers;
+  const answersArray = STORE.questions[STORE.questionNumber].answers;
   let answersHtml = "";
   let idx = 0;
   answersArray.forEach(answer => {
@@ -142,9 +142,32 @@ function answerSubmit() {
 
   });
 }
+// handleQuestionFormSubmission() {
+  $('body').on('submit', '#question-form', function (event) {
+    event.preventDefault();
+    const questionNumber = STORE.questions
+    [STORE.questionNumber];
+    let selectedOption = $('input[name=options]:checked').val();
+    let optionContainerId = `#option-container-${questionNumber.answers.findIndex(i => i 
+      === selectedOption)}`;
+      if (selectedOption === questionNumber.correctAnswer) {
+        STORE.score++;
+        $(optionContainerId).append
+        (generateFeedback('correct'));
+      } else {
+        $(optionContainerId).append(generateFeedback('incorrect'));
+      }
+      STORE.questionNumber++;
+      $('#submit').hide();
+      $('input[type=radio]').each(() => {
+        $('input[type=radio]').attr('disabled', true);
+      });
+      $('#next-question-btn').show();
+  });
+
 // feedback
 function generateFeedback(answerStatus) {
-  let correctAnswer = STORE.questions[STORE.currentQuestionNum].correctAnswer;
+  let correctAnswer = STORE.questions[STORE.questionNumber].correctAnswer;
   let html = "";
   if (answerStatus === "correct") {
     html = `<div class="right-answer">Yes!</div>`;
@@ -182,12 +205,13 @@ function generateResults() {
 
 function render() {
   // render the quiz in DOM
-  console.log("in renderQuizApp");
-  currentQuestionNum = STORE.currentQuestionNum;
+  console.log("in render");
+  let questionNumber = STORE.questionNumber;
   if (STORE.quizStarted === false) {
+    STORE.quizStarted = true;
     $('main').html(generateStartPage());
-  } else if ((currentQuestionNum => 0) &&
-    (currentQuestionNum < STORE.questions.length)) {
+  } else if ((questionNumber >= 0) &&
+    (questionNumber < STORE.questions.length)) {
     html = generateScore();
     html += generateQuestion();
     $('main').html(html);
@@ -199,15 +223,10 @@ function render() {
 
 
 function main() {
-  generateResults();
-  answerSubmit();
-  generateQuestion();
-  render();
-  startQuiz();
-  generateScore();
-  nextQuestionClick();
-  generateFeedback();
-  generateAnswers();
+    answerSubmit();
+    startQuiz();
+    nextQuestionClick();
+    render();
 }
 $(main);
 
