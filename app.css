@@ -15,6 +15,13 @@
   border-style: 3px solid black;
 }
 
+.go {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+  
+}
+
 h1 {
   display: flex;
   justify-content: center;
@@ -26,8 +33,26 @@ h2 {
 }
 
 
-.submit-choice {
+.submit {
   display: flex;
   justify-content: center;
-  align-self: center;
+  margin: 10px;
+}
+
+.next {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+
+.reset {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+
+.question-and-score {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 10px;
 }

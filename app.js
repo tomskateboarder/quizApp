@@ -65,8 +65,9 @@ function generateStartPage() {
   // show main page with title and button
   return `<div class="mainPage">
   <h2>Skateboarding Trivia:</h2>
-  <button id="startQuiz">Let's Go!</button>
+  <button id="go">Let's Go!</button>
   </div>`
+
 }
 // show score
 function generateScore() {
@@ -84,8 +85,8 @@ function generateScore() {
 
 // start quiz
 function startQuiz() {
-  $("main").on('click', "#startQuiz", function() {
-    
+  $("main").on('click', "#go", function () {
+
     render();
   })
 }
@@ -98,7 +99,7 @@ function generateQuestion() {
   <legend> ${STORE.questions[questionNumber].question} </legend>
   </div> ${generateAnswers()} </div>
   <button type="submit" id ="submit" tabindex="5">submit</button>
-  <button type="button" id="next-button" tabindex="6"> next &gt;></button>
+  <button type="button" id="next" tabindex="6"> next &gt;></button>
   </fieldset>
   </form>`;
 
@@ -111,8 +112,8 @@ function generateAnswers() {
   let idx = 0;
   answersArray.forEach(answer => {
     answersHtml += `
-    <div tabindex ="${idx + 1}" id ="option-container -${idx}">
-    <input type="radio" name="options" id ="option${idx + 1}" value="${answer}"
+    <div tabindex="${idx + 1}" id="option-container-${idx}">
+    <input type="radio" name="options" id="option${idx + 1}" value="${answer}"
      required>
      <label for="option${idx + 1}"> ${answer}
      </label>
@@ -122,17 +123,17 @@ function generateAnswers() {
   return answersHtml;
 }
 
-function answerSubmit() {
+/*function answerSubmit() {
   // submit choice
-  $('main').on('submit', '#question', function (event) {
+  $('main').on('submit', '#question-form', function (event) {
     event.preventDefault();
     // respond to choice
-    let chosenAnswer = $("input[name='answer']:checked").val();
+    let chosenAnswer = $("input[name='options']:checked").val();
     console.log(chosenAnswer);
     // show nope
     {
       if (chosenAnswer === STORE.answers) {
-        return `<h2>Nope</h2>`;
+        $('main').html() `<h2>Nope</h2>`;
         // show correct
       }
       else (chosenAnswer === STORE.correctAnswer)
@@ -141,24 +142,24 @@ function answerSubmit() {
     }
     
   });
-}
+}*/
 function handleQuestionFormSubmission() {
   $('body').on('submit', '#question-form', function (event) {
     event.preventDefault();
     const questionNumber = STORE.questions
     [STORE.questionNumber];
     let selectedOption = $('input[name=options]:checked').val();
-    let optionContainerId = `#option-container-${questionNumber.answers.findIndex(i => i 
+    let optionContainerId = `#option-container-${questionNumber.answers.findIndex(i => i
       === selectedOption)}`;
-      if (selectedOption === questionNumber.correctAnswer) {
-        STORE.score++;
-        $(optionContainerId).append
+    if (selectedOption === questionNumber.correctAnswer) {
+      STORE.score++;
+      $(optionContainerId).append
         (generateFeedback('correct'));
-      } else {
-        $(optionContainerId).append(generateFeedback('incorrect'));
-      }
-      STORE.questionNumber++;
-     render();
+    } else {
+      $(optionContainerId).append(generateFeedback('incorrect'));
+    }
+    STORE.questionNumber++;
+
   });
 }
 // feedback
@@ -173,11 +174,12 @@ function generateFeedback(answerStatus) {
   return html;
 }
 // go to next question
-/*function nextQuestionClick() {
-  $('body').on('click', "#next-button", (event) => {
+function nextQuestionClick() {
+  $('body').on('click', "#next", (event) => {
+    event.preventDefault();
     render();
   });
-}*/
+}
 
 
 function generateResults() {
@@ -208,7 +210,7 @@ function render() {
     $('main').html(generateStartPage());
   } else if ((questionNumber >= 0) &&
     (questionNumber < STORE.questions.length)) {
-    html = generateScore();
+    let html = generateScore();
     html += generateQuestion();
     $('main').html(html);
   } else {
@@ -219,10 +221,10 @@ function render() {
 
 
 function main() {
-    answerSubmit();
-    startQuiz();
-    //nextQuestionClick();
-    render();
+  handleQuestionFormSubmission();
+  startQuiz();
+  nextQuestionClick();
+  render();
 }
 $(main);
 
