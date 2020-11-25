@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Example store structure
  */
@@ -31,9 +33,9 @@ const STORE = {
         'Tony Hawk',
         'Rodney Mullen',
         'Steve Caballero',
-        'Alan "Ollie" Gelfand'
+        "Alan 'Ollie' Gelfand"
       ],
-      correctAnswer: 'Alan "Ollie" Gelfand'
+      correctAnswer: "Alan 'Ollie' Gelfand"
     },
     {
       question: 'Who invented the kickflip?',
@@ -64,12 +66,14 @@ const STORE = {
 function generateStartPage() {
   // show main page with title and button
   return `<div class="mainPage">
-  <h2>Skateboarding Trivia:</h2>
-  <button id="go">Let's Go!</button>
+  <h2>Skateboarding Trivia:</h2><br>
+  <h4>Time to learn some skateboarding history!</h4><br>
+  <div class="go">
+  <button id="go">Let's Go!</button></div>
   </div>`
 
 }
-// show score
+// show score and question number
 function generateScore() {
   return `
     <ul class="question-and-score">
@@ -99,7 +103,7 @@ function generateQuestion() {
   <legend> ${STORE.questions[questionNumber].question} </legend>
   </div> ${generateAnswers()} </div>
   <button type="submit" id ="submit" tabindex="5">submit</button>
-  <button type="button" id="next" tabindex="6"> next &gt;></button>
+  <button type="button" id="next" tabindex="6">next &gt;></button>
   </fieldset>
   </form>`;
 
@@ -123,32 +127,14 @@ function generateAnswers() {
   return answersHtml;
 }
 
-/*function answerSubmit() {
-  // submit choice
-  $('main').on('submit', '#question-form', function (event) {
-    event.preventDefault();
-    // respond to choice
-    let chosenAnswer = $("input[name='options']:checked").val();
-    console.log(chosenAnswer);
-    // show nope
-    {
-      if (chosenAnswer === STORE.answers) {
-        $('main').html() `<h2>Nope</h2>`;
-        // show correct
-      }
-      else (chosenAnswer === STORE.correctAnswer)
-      return `<h2>${STORE.correctAnswer}</h2>`;
-      
-    }
-    
-  });
-}*/
+// handle the answer by showing responses of correct or incorrect
 function handleQuestionFormSubmission() {
   $('body').on('submit', '#question-form', function (event) {
     event.preventDefault();
     const questionNumber = STORE.questions
     [STORE.questionNumber];
     let selectedOption = $('input[name=options]:checked').val();
+    console.log(selectedOption);
     let optionContainerId = `#option-container-${questionNumber.answers.findIndex(i => i
       === selectedOption)}`;
     if (selectedOption === questionNumber.correctAnswer) {
@@ -201,6 +187,17 @@ function generateResults() {
     </div>`;
 }
 
+// make functionality for reset button
+function handleReset() {
+  $('main').on('click', "#reset", (event) => {
+    event.preventDefault();
+    STORE.quizStarted = false;
+
+    render();
+  })
+
+}
+
 function render() {
   // render the quiz in DOM
   console.log("in render");
@@ -225,6 +222,7 @@ function main() {
   startQuiz();
   nextQuestionClick();
   render();
+  handleReset();
 }
 $(main);
 

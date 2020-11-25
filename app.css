@@ -13,13 +13,25 @@
 
 .mainPage {
   border-style: 3px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  margin-left: 30px;
 }
 
 .go {
   display: flex;
   justify-content: center;
-  margin: 20px;
+  margin: auto;
+ 
   
+}
+
+.col-12 {
+  display: flex;
+  justify-content: center;
+  margin: auto;
 }
 
 h1 {
