@@ -98,31 +98,33 @@ function startQuiz() {
 function generateQuestion() {
   let questionNumber = STORE.questionNumber;
   return `<form id="question-form" class="question-form">
-  <fieldset><div class="question"></div>
-  <div class="options"><div class="answers">
+  <fieldset>
+  
   <legend> ${STORE.questions[questionNumber].question} </legend>
-  </div> ${generateAnswers()} </div>
-  <button type="submit" id ="submit" tabindex="5">submit</button>
-  <button type="button" id="next" tabindex="6">next &gt;></button>
+  <div class="answers"> ${generateAnswers()} </div><br/>
+  <input type="submit" id ="submit" value="submit"/>
+  <button type="button" id="next">next &gt;></button>
   </fieldset>
   </form>`;
 
 
 }
+
 // respond to guesses
 function generateAnswers() {
   const answersArray = STORE.questions[STORE.questionNumber].answers;
   let answersHtml = "";
-  let idx = 0;
-  answersArray.forEach(answer => {
+  
+  answersArray.forEach((answer, idx) => {
     answersHtml += `
-    <div tabindex="${idx + 1}" id="option-container-${idx}">
+    <label for="option${idx + 1}"> ${answer}
     <input type="radio" name="options" id="option${idx + 1}" value="${answer}"
      required>
-     <label for="option${idx + 1}"> ${answer}
+     
      </label>
-     </div>`;
-    idx++;
+     <br/>
+     `;
+    
   });
   return answersHtml;
 }
@@ -192,11 +194,15 @@ function handleReset() {
   $('main').on('click', "#reset", (event) => {
     event.preventDefault();
     STORE.quizStarted = false;
-
+    STORE.questionNumber = 0;
+      STORE.score = 0;
     render();
+
   })
 
 }
+
+
 
 function render() {
   // render the quiz in DOM
@@ -215,7 +221,45 @@ function render() {
   }
 
 }
+/* function handleKeyPress() {
+  console.log("in handleKeyPress");	// dbg.
 
+  $('main').on('keyup', () => { // work 1 - main
+    // look for keycode 
+    const spaceCode = 32;
+    x = event.keyCode;
+    console.log("keycode  x :>> ", x);  // dbg.
+    if (event.keyCode === spaceCode)
+    {
+	$("input").val($("input").val()+' ');
+
+      console.log("in space code"); // dbg.
+      console.log("event :>> ", event); // dbg.
+
+      kiddie = $('main').children("input").id;
+      console.log("kiddie :>> ", kiddie); // dbg.
+
+      firstone = $('main').first();
+      console.log("firstone :>> ", firstone); // dbg.
+
+  // ww..2 - key code.
+      // ??? how to get at the 
+//      <div tabindex ="${idx + 1}" id="option-container-${idx}">
+//        <input type="radio" name="options" id="option${idx + 1}" value= "${answer}"  required> 
+//        <input type="radio" name="option" id="option2" value="Abraham Lincoln when he's wearing the hat" required>
+      curtar = event.currentTarget;
+      elemStr = event.path[0];
+      console.log("elemStr :>> ", elemStr); // dbg.
+
+	  // var startAt = elemStr.search("input");
+
+      //      elemStr = "abcd";
+      //	  console.log("startAt :>> ", startAt); // dbg.
+      // ??? once located how do I set the dot at circle.
+    }
+  });
+}
+*/
 
 function main() {
   handleQuestionFormSubmission();
