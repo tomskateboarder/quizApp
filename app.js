@@ -59,7 +59,7 @@ const STORE = {
     }
   ],
   quizStarted: false,
-  questionNumber: 0,
+  currentQuestion: 0,
   score: 0
 };
 
@@ -78,7 +78,7 @@ function generateScore() {
   return `
     <ul class="question-and-score">
       <li id="question-number">
-        Question Number: ${STORE.questionNumber + 1}/${STORE.questions.length}
+        Question Number: ${STORE.currentQuestion + 1}/${STORE.questions.length}
       </li>
       <li id="score">
         Score: ${STORE.score}/${STORE.questions.length}
@@ -89,42 +89,45 @@ function generateScore() {
 
 // start quiz
 function startQuiz() {
-  $("main").on('click', "#go", function () {
-
+  $("main").on('click', "#go", function (event) {
+    STORE.quizStarted = true;
     render();
-  })
+  });
 }
 // generate questions
 function generateQuestion() {
-  let questionNumber = STORE.questionNumber;
+  let currentQuestion = STORE.questions[STORE.currentQuestion];
   return `<form id="question-form" class="question-form">
   <fieldset>
-  
-  <legend> ${STORE.questions[questionNumber].question} </legend>
-  <div class="answers"> ${generateAnswers()} </div><br/>
-  <input type="submit" id ="submit" value="submit"/>
-  <button type="button" id="next">next &gt;></button>
+    <div class="question">
+      <legend> ${currentQuestion.question}</legend>
+    </div>
+    <div class="options">
+      <div class="answers">
+        ${generateAnswers()}
+      </div>
+    </div>
+    <button type="submit" id="submit-answer-btn" tabindex="5">Submit</button>
+    <button type="button" id="next-question-btn" tabindex="6"> Next &gt;></button>
   </fieldset>
-  </form>`;
+</form >`;
 
 
 }
 
 // respond to guesses
 function generateAnswers() {
-  const answersArray = STORE.questions[STORE.questionNumber].answers;
+  const answersArray = STORE.questions[STORE.currentQuestion].answers;
   let answersHtml = "";
-  
-  answersArray.forEach((answer, idx) => {
+  let i = 0;
+  answersArray.forEach(answer => {
     answersHtml += `
-    <label for="option${idx + 1}"> ${answer}
-    <input type="radio" name="options" id="option${idx + 1}" value="${answer}"
-     required>
-     
-     </label>
-     <br/>
+    <div id="option-container-${i}">
+        <input type="radio" name="options" id="option${i + 1}" value= "${answer}" tabindex ="${i + 1}" required> 
+        <label for="option${i + 1}"> ${answer}</label>
+      </div>
      `;
-    
+    i++;
   });
   return answersHtml;
 }
@@ -133,26 +136,31 @@ function generateAnswers() {
 function handleQuestionFormSubmission() {
   $('body').on('submit', '#question-form', function (event) {
     event.preventDefault();
-    const questionNumber = STORE.questions
-    [STORE.questionNumber];
+    const currentQuestion = STORE.questions[STORE.currentQuestion];
     let selectedOption = $('input[name=options]:checked').val();
-    console.log(selectedOption);
-    let optionContainerId = `#option-container-${questionNumber.answers.findIndex(i => i
+
+    let optionContainerId = `#option-container-${currentQuestion.answers.findIndex(i => i
       === selectedOption)}`;
-    if (selectedOption === questionNumber.correctAnswer) {
+    if (selectedOption === currentQuestion.correctAnswer) {
       STORE.score++;
       $(optionContainerId).append
         (generateFeedback('correct'));
     } else {
       $(optionContainerId).append(generateFeedback('incorrect'));
     }
-    STORE.questionNumber++;
-
+    STORE.currentQuestion++;
+    $('#submit-answer-btn').hide();
+    // disable all inputs
+    $('input[type=radio]').each(() => {
+      $('input[type=radio]').attr('disabled', true);
+    });
+    // show the next button
+    $('#next-question-btn').show();
   });
 }
 // feedback
 function generateFeedback(answerStatus) {
-  let correctAnswer = STORE.questions[STORE.questionNumber].correctAnswer;
+  let correctAnswer = STORE.questions[STORE.currentQuestion].correctAnswer;
   let html = "";
   if (answerStatus === "correct") {
     html = `<div class="right-answer">Yes!</div>`;
@@ -163,8 +171,8 @@ function generateFeedback(answerStatus) {
 }
 // go to next question
 function nextQuestionClick() {
-  $('body').on('click', "#next", (event) => {
-    event.preventDefault();
+  $('body').on('click', "#next-question-btn ", (event) => {
+
     render();
   });
 }
@@ -174,46 +182,55 @@ function generateResults() {
   // show when quiz is done and show reset button
   // show results
   return `<div class="results">
-    <form id="js-restart-quiz"><fieldset>
-    <div class="row"><div class="col-12">
-    <legend>How did you do? ${STORE.score}/${STORE.questions.length}</legend>
-    </div>
-    </div>
-    <div class="row">
-    <div class="col-12">
-    <button type="button" id="reset">reset</button>
-    </div>
-    </div>
+  <form id="js-restart-quiz">
+    <fieldset>
+      <div class="row">
+        <div class="col-12">
+          <legend>Your Score is: ${STORE.score}/${STORE.questions.length}</legend>
+        </div>
+      </div>
+    
+      <div class="row">
+        <div class="col-12">
+          <button type="button" id="restart"> Restart Quiz </button>
+        </div>
+      </div>
     </fieldset>
-    </form>
-    </div>`;
+</form>
+</div>`;
 }
 
 // make functionality for reset button
-function handleReset() {
-  $('main').on('click', "#reset", (event) => {
-    event.preventDefault();
-    STORE.quizStarted = false;
-    STORE.questionNumber = 0;
-      STORE.score = 0;
-    render();
+function restartQuiz() {
 
-  })
+  STORE.quizStarted = false;
+  STORE.currentQuestion = 0;
+  STORE.score = 0;
+
+
+
 
 }
 
-
+function handleRestartButtonClick() {
+  $('main').on('click', "#restart", (event) => {
+    
+    restartQuiz();
+    render();
+  });
+}
 
 function render() {
   // render the quiz in DOM
-  console.log("in render");
-  let questionNumber = STORE.questionNumber;
+  let html = "";
+
   if (STORE.quizStarted === false) {
-    STORE.quizStarted = true;
+
     $('main').html(generateStartPage());
-  } else if ((questionNumber >= 0) &&
-    (questionNumber < STORE.questions.length)) {
-    let html = generateScore();
+    return;
+  } else if (STORE.currentQuestion >= 0 &&
+    STORE.currentQuestion < STORE.questions.length) {
+    html = generateScore();
     html += generateQuestion();
     $('main').html(html);
   } else {
@@ -231,7 +248,7 @@ function render() {
     console.log("keycode  x :>> ", x);  // dbg.
     if (event.keyCode === spaceCode)
     {
-	$("input").val($("input").val()+' ');
+  $("input").val($("input").val()+' ');
 
       console.log("in space code"); // dbg.
       console.log("event :>> ", event); // dbg.
@@ -251,7 +268,7 @@ function render() {
       elemStr = event.path[0];
       console.log("elemStr :>> ", elemStr); // dbg.
 
-	  // var startAt = elemStr.search("input");
+    // var startAt = elemStr.search("input");
 
       //      elemStr = "abcd";
       //	  console.log("startAt :>> ", startAt); // dbg.
@@ -266,7 +283,7 @@ function main() {
   startQuiz();
   nextQuestionClick();
   render();
-  handleReset();
+  handleRestartButtonClick();
 }
 $(main);
 
