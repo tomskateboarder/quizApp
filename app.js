@@ -68,9 +68,10 @@ function generateStartPage() {
   return `<div class="mainPage">
   <h2>Skateboarding Trivia:</h2><br>
   <h4>Time to learn some skateboarding history!</h4><br>
+  </div>
   <div class="go">
   <button id="go">Let's Go!</button></div>
-  </div>`
+  `
 
 }
 // show score and question number
@@ -238,45 +239,7 @@ function render() {
   }
 
 }
-/* function handleKeyPress() {
-  console.log("in handleKeyPress");	// dbg.
 
-  $('main').on('keyup', () => { // work 1 - main
-    // look for keycode 
-    const spaceCode = 32;
-    x = event.keyCode;
-    console.log("keycode  x :>> ", x);  // dbg.
-    if (event.keyCode === spaceCode)
-    {
-  $("input").val($("input").val()+' ');
-
-      console.log("in space code"); // dbg.
-      console.log("event :>> ", event); // dbg.
-
-      kiddie = $('main').children("input").id;
-      console.log("kiddie :>> ", kiddie); // dbg.
-
-      firstone = $('main').first();
-      console.log("firstone :>> ", firstone); // dbg.
-
-  // ww..2 - key code.
-      // ??? how to get at the 
-//      <div tabindex ="${idx + 1}" id="option-container-${idx}">
-//        <input type="radio" name="options" id="option${idx + 1}" value= "${answer}"  required> 
-//        <input type="radio" name="option" id="option2" value="Abraham Lincoln when he's wearing the hat" required>
-      curtar = event.currentTarget;
-      elemStr = event.path[0];
-      console.log("elemStr :>> ", elemStr); // dbg.
-
-    // var startAt = elemStr.search("input");
-
-      //      elemStr = "abcd";
-      //	  console.log("startAt :>> ", startAt); // dbg.
-      // ??? once located how do I set the dot at circle.
-    }
-  });
-}
-*/
 
 function main() {
   handleQuestionFormSubmission();
