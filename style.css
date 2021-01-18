@@ -1,0 +1,211 @@
+* {
+  box-sizing: border-box;
+}
+/* set background color. */
+body {
+  background-color: rgb(219, 219, 219);
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-top: 50px;
+}
+
+section h2 {
+  display: flex;
+  justify-content: center;
+
+}
+/* center logo. */
+header {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: auto;
+}
+
+.tv-image {
+  width: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  
+  width: auto;
+  height: 250px;
+}
+/* set font family for all text and stylize it. */
+
+h5, h4, h3, h2, h1, p, ul {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  
+}
+
+img {
+  width: 100%;
+  display: flex;
+  
+}
+
+ol {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: medium;
+}
+
+h4 {
+  font-size: large;
+}
+/* center headings. */
+h5 {
+  
+  font-size: large;
+}
+
+h3 {
+  text-align: center;
+  font-size: 20px;
+}
+
+h1, h2 {
+  text-align: center;
+}
+/* stylize links. */
+a {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+a:link    {color: blue;}
+a:visited {color: red;}
+a:hover   {color: blueviolet;}
+a:active  {color: yellow;}
+
+
+/* align email address center. */
+div {
+  text-align: center;
+}
+
+nav ul li a {
+  display: flex;
+  justify-content: center;  
+  align-content: center;
+}
+
+nav ul {
+  padding-left: 0;
+}
+
+nav ul li {
+  
+  list-style: none;
+}
+
+hr {
+  height: 8px;
+  background-color: white;
+  /*border: 2px solid grey;
+       size style color */
+  margin-top: 80px;
+  margin-bottom: 20px;
+  
+}
+
+.item {
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 1px;
+  
+}
+
+/* Groups and Items for Mobile First */
+
+.group h2 {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin: auto;
+}
+
+/* Contact Form - Image */
+
+.contact-image {
+  border: 1px solid #ababab;
+  border-radius: 8px;
+}
+ 
+.group {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 100px;
+}
+
+.item {
+  flex: 1;
+  margin: 10px;
+}
+
+.item-double {
+  flex: 2;
+  margin: 10px;
+}
+
+.contact-links {
+  justify-content: center;
+  padding-left: 0;
+}
+
+p {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* Groups and Items (Desktop) */
+
+@media all and  (min-width: 600px) {
+  section {
+      padding: 0 10%;
+  }
+
+  .contact-links {
+    justify-content: center;
+  }
+
+  nav ul {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  nav ul li a {
+    margin: 0 20px 0 0;
+  }
+
+  nav ul li:last-child a {
+    margin-right: 0;
+  }
+
+  .group {
+      flex-direction: row;
+  }
+}
+
+/* Contact Form Design */
+
+form {
+  padding-right: 6px;
+}
+
+form input,
+form textarea {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+form textarea {
+  height: 160px;
+}
+
