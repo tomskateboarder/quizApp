@@ -69,8 +69,7 @@ function generateStartPage() {
   <h2>Skateboarding Trivia:</h2><br>
   <h4>Time to learn some skateboarding history!</h4><br>
   </div>
-  <div class="go">
-  <button id="go">Let's Go!</button></div>
+  <button id="go">Let's Go!</button>
   `
 
 }
